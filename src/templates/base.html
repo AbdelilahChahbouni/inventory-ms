@@ -101,14 +101,13 @@
           <a href="#UserSubmenu" data-toggle="collapse"
             class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="fas fa-user-circle"></i> Admin</a>
           <ul class="collapse list-unstyled" id="UserSubmenu">
-            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="#"><i class="fas fa-dot-circle"></i> Admin
+            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}"><i class="fas fa-dot-circle"></i> Admin
                 Page</a> </li>
 
-            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="#"><i class="fas fa-dot-circle"></i>
+            <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'logout' %}"><i class="fas fa-dot-circle"></i>
                 Logout</a> </li>
           </ul>
         </li>
-
       </ul>
     </nav>
 
@@ -116,8 +115,12 @@
 
       <div class="row">
         <div class="col-md-12">
-          <!-- messages here -->
-		  <!-- <div class="alert alert-message.tags"> message </div>  -->
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{message.tags}}"> {{message}} </div> 
+            {% endfor %}
+          {% endif %}
+           
           <div >
             <!-- block content -->
             {% block content %}
