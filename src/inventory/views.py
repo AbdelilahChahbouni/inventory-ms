@@ -12,15 +12,17 @@ from django.contrib import messages
 class StockListView(FilterView):
     queryset = InventoryStock.objects.filter(is_deleted=False)
     filterset_class = InventoryStockFilter
-    template_name = 'inventory.html'
+    template_name = 'inventory/inventory.html'
+    # context_object_name='stocks '
     paginate_by = 10
 
 class StockCreateView(SuccessMessageMixin, generic.CreateView):
     model = InventoryStock
     template_name = 'inventory/create_stock.html'
     form_class = InventoryStockForm
-    success_message = "Stock Created Succssefully"
     success_url = '/'
+    success_message = "Stock Created Succssefully"
+    
 
 
 class StockUpdateView(SuccessMessageMixin, generic.UpdateView):
