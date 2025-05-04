@@ -17,10 +17,10 @@ class StockListView(FilterView):
 
 class StockCreateView(SuccessMessageMixin, generic.CreateView):
     model = InventoryStock
-    template_name = 'create_stock.html'
+    template_name = 'inventory/create_stock.html'
     form_class = InventoryStockForm
     success_message = "Stock Created Succssefully"
-    success_url = '/stock_list'
+    success_url = '/'
 
 
 class StockUpdateView(SuccessMessageMixin, generic.UpdateView):
