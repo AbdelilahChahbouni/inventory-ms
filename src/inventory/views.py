@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect , get_list_or_404
+from django.shortcuts import render , redirect , get_object_or_404
 from .models import *
 from .filters import InventoryStockFilter   
 from .forms import *
@@ -27,20 +27,21 @@ class StockCreateView(SuccessMessageMixin, generic.CreateView):
 
 class StockUpdateView(SuccessMessageMixin, generic.UpdateView):
     model = InventoryStock
-    template_name = 'update_stock.html'
+    template_name = 'inventory/update_stock.html'
     form_class = InventoryStockForm
+    success_url = '/inventory/stock_list'
     success_message = "Stock Updated Succssefully"
-    success_url = '/stock_list'
+    
 
 class StockDeleteView(generic.View):
-    template_name = 'delete_stock.html'
+    template_name = 'inventory/delete_stock.html'
     success_message = "Stock delted Successfully"
 
     def get(self , request , pk):
-        stock = get_list_or_404(InventoryStock , pk=pk)
+        stock = get_object_or_404(InventoryStock , pk=pk)
         return render(request , self.template_name , {'stock':stock})
-    def post(self,request , pk):
-        stock = get_list_or_404(InventoryStock , pk=pk)
+    def post(self,request,pk):
+        stock = get_object_or_404(InventoryStock , pk=pk)
         stock.is_deleted = True
         stock.save()
         messages.success(request, self.success_message)
