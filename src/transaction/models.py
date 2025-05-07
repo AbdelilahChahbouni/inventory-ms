@@ -8,7 +8,7 @@ class Supplier(models.Model):
     address = models.CharField(max_length=200)
     email = models.EmailField(max_length=200 , unique=True)
     gstin = models.CharField(max_length=15 , unique=True)
-    is_deleted = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

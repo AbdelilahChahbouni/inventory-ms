@@ -11,7 +11,7 @@
         <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
             <div class="col-md-8">Suppliers List</div>
             <div class="col-md-4">               
-                <div style="float:right;"> <a class="btn btn-success" href="">Add New Supplier</a> </div>
+                <div style="float:right;"> <a class="btn btn-success" href="{% url 'create_suplier' %}">Add New Supplier</a> </div>
             </div>
         </div>
 
@@ -46,8 +46,8 @@
 
                     <td class="align-middle">
                         <div class="align-middle">
-                            <a href="#" class="btn btn-info btn-sm">Edit Details</a>
-                            <a href="#" class="btn btn-danger btn-sm">Delete Supplier</a>
+                            <a href="{% url 'update_suplier' suplier.id %}" class="btn btn-info btn-sm">Edit Details</a>
+                            <a href="{% url 'delete_suplier' suplier.id %}" class="btn btn-danger btn-sm">Delete Supplier</a>
                         </div>
                     </td>              
                 </tr>
