@@ -3,4 +3,5 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(Supplier)
+admin.site.register([Supplier , PurchaseItem , PurchaseBillDetails , PurchaseBill])
+
