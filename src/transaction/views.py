@@ -36,6 +36,33 @@ class DeleteSuplierView(generic.View):
         suplier.is_deleted = True
         suplier.save()
         return redirect('supliers_list')
+    
+
+class PurchseListView(generic.ListView):
+    model = PurchaseBill
+    template_name = 'purchase/purchase_list.html'
+    context_object_name = 'bills'
+    ordering = ['-time']
+    paginate_by = 10
+
+
+class SelectSupplierForm(forms.ModelForm):
+    form_class = SelectSuplierForm
+    template_name = 'purchase/select_supplier.html'
+
+    def get(self ,request, *args , **kwargs):
+        form = self.form_class
+        return render(request , self.template_name , {'form':form})
+    
+    def post(self , request , *args , **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            supp_id = request.POST.get('suplier')
+            supplier = get_object_or_404(Supplier , id=supp_id)
+            return redirect('new_purchase' , supplier.id)
+        return render(request , self.template_name , {'form':form})
+    
+
 
 
 
