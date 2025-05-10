@@ -46,7 +46,7 @@ class PurchseListView(generic.ListView):
     paginate_by = 10
 
 
-class SelectSupplierForm(forms.ModelForm):
+class SelectSupplierView(generic.View):
     form_class = SelectSuplierForm
     template_name = 'purchase/select_supplier.html'
 
@@ -61,6 +61,64 @@ class SelectSupplierForm(forms.ModelForm):
             supplier = get_object_or_404(Supplier , id=supp_id)
             return redirect('new_purchase' , supplier.id)
         return render(request , self.template_name , {'form':form})
+    
+
+class PurchaseCeateView(generic.View):
+    template_name = 'purchase/new_purchase.html'
+
+    def get(self,request ,pk ):
+        formset = PurchaseItemFormset(request.GET or None)
+        supp_id = get_object_or_404(Supplier , pk=pk)
+        context = {
+            'formset' : formset,
+            'supp_id' : supp_id
+        }
+        return render(request , self.template_name , context)
+    
+    def post(self , request , pk):
+        formset = PurchaseItemFormset(request.POST)
+        supp_id = get_object_or_404(Supplier , pk=pk)
+        if formset.is_valid():
+            #create Bill
+            bill_obj = PurchaseBill(Suplier=supp_id)
+            bill_obj.save()
+
+            #create BillDetails
+            bill_obj_details = PurchaseBillDetails(bill_no=bill_obj)
+            bill_obj_details.save()
+            for form in formset:
+                bill_item = form.save(commit=False)
+                bill_item.bill_no = bill_obj
+                stock = get_object_or_404(InventoryStock , name=bill_item.stock.name)
+                bill_item.total_price = bill_item.per_price * bill_item.quantity
+                stock.quantity += bill_item.quantity
+                stock.save()
+                bill_item.save()
+            messages.success(request , "Purchase Items have been registred succssfuly ")
+            return redirect('purchase_bill', bill_no=bill_obj.bill_no)
+        formset = PurchaseItemFormset(request.GET or None)
+        context = {
+            'formset' : formset,
+            'supp_id' : supp_id
+        }
+
+        return render(request , self.template_name , context)
+
+class PurchaseDeleteView(SuccessMessageMixin , generic.DeleteView):
+    model = PurchaseBill
+    template_name = 'purchase/purchase_delete.html'
+    success_url = '/transaction/purchase_list'
+
+    def delete(self , *args , **kwargs):
+        self.object = self.get_object()
+        items = PurchaseBill.objects.filter(bill_no=self.object.bill_no)
+        for item in items:
+            stock = get_object_or_404(InventoryStock , name=item.stock.name)
+            if stock.is_deleted == False:
+                stock.quantity -= item.quantity
+                stock.save()
+        messages.success(self.request , "Purchase Bill Has Been Succssfuly Deleted")
+        return super(PurchaseDeleteView, self).delete(*args , **kwargs)
     
 
 
