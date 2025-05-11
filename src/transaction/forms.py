@@ -34,7 +34,7 @@ class PurchaseItemForm(forms.ModelForm):
 PurchaseItemFormset = formset_factory(PurchaseItemForm , extra=1)
 
 
-class PurchaseBillDetails(forms.ModelForm):
+class PurchaseDetailsForm(forms.ModelForm):
     class Meta:
         model = PurchaseBillDetails
         fields = ['eway', 'veh', 'destination', 'po','cgst', 'sgst', 'igst', 'cess', 'tcs']
