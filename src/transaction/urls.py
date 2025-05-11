@@ -15,5 +15,6 @@ urlpatterns = [
     path('select_supplier', SelectSupplierView.as_view(), name='select_supplier'),
     path('new_purchase/<str:pk>',PurchaseCeateView.as_view(), name='new_purchase'),
     path('purchase_delete/<str:pk>',PurchaseDeleteView.as_view(), name='delete_purchase'),
+    path('purchase_bill/<str:bill_no>', PurchaseBillView.as_view(), name='purchase_bill'),
 
 ]

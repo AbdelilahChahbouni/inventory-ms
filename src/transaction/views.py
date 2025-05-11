@@ -80,7 +80,7 @@ class PurchaseCeateView(generic.View):
         supp_id = get_object_or_404(Supplier , pk=pk)
         if formset.is_valid():
             #create Bill
-            bill_obj = PurchaseBill(Suplier=supp_id)
+            bill_obj = PurchaseBill(suplier=supp_id)
             bill_obj.save()
 
             #create BillDetails
@@ -95,7 +95,8 @@ class PurchaseCeateView(generic.View):
                 stock.save()
                 bill_item.save()
             messages.success(request , "Purchase Items have been registred succssfuly ")
-            return redirect('purchase_bill', bill_no=bill_obj.bill_no)
+            # return redirect('purchase_bill', bill_no=bill_obj.bill_no)
+            return redirect('/')
         formset = PurchaseItemFormset(request.GET or None)
         context = {
             'formset' : formset,
@@ -119,6 +120,42 @@ class PurchaseDeleteView(SuccessMessageMixin , generic.DeleteView):
                 stock.save()
         messages.success(self.request , "Purchase Bill Has Been Succssfuly Deleted")
         return super(PurchaseDeleteView, self).delete(*args , **kwargs)
+    
+
+
+class PurchaseBillView(generic.View):
+    model = PurchaseBill
+    template_name = 'bill/purchase_bill.html'
+    bill_base = 'bill/bill_base.html'
+    fom_class = PurchaseDetailsForm
+
+    def get_bill_context(self , bill_no):
+        bill = get_object_or_404(PurchaseBill , bill_no=bill_no)
+        items = PurchaseItem.objects.filter(bill_no=bill_no)
+        bill_details = get_object_or_404(PurchaseBillDetails , bill_no=bill_no)
+
+        return {
+            'bill':bill,
+            'items':items,
+            'bill_details':bill_details,
+            'bill_base':self.bill_base
+        }
+    
+    def get(self , request , bill_no):
+        context = self.get_bill_context(bill_no=bill_no)
+        return render(request , self.template_name , context)
+    
+    def post(self , request , bill_no):
+        bill_details_obj = get_object_or_404(PurchaseBillDetails , bill_no=bill_no)
+        form = self.form_class(request.POST , instance=bill_details_obj)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request , "Bill details have been successfuly modefied")
+        else:
+            messages.success(request , "There was an error updating the bill details")
+        context = self.get_bill_context(bill_no)
+        return render(request , self.template_name , context)
     
 
 
