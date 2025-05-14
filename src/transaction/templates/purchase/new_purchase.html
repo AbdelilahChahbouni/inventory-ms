@@ -2,7 +2,8 @@
 {% load static %}
 {% block title %}New Purchase{% endblock title %}
 {% block content %}
-      <div class="row">
+  <div class="row">
+
      <div class="col-md-12">
           <!-- messages here -->
           <div class="container">
@@ -88,7 +89,8 @@
 
             </div>
         </div>
-      </div>    
+      </div>   
+  </div> 
   <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
   <script type="text/javascript">
@@ -189,6 +191,8 @@
         var element = $(this);
         var quantity = element.parents('.form-row').find('.quantity').val();
         var perprice = element.parents('.form-row').find('.price').val();
+        consol.log(quantity)
+        consol.log(perprice)
 
         // Calculate the total
         var tprice = quantity * perprice;

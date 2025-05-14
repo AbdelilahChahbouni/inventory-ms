@@ -95,8 +95,8 @@ class PurchaseCeateView(generic.View):
                 stock.save()
                 bill_item.save()
             messages.success(request , "Purchase Items have been registred succssfuly ")
-            # return redirect('purchase_bill', bill_no=bill_obj.bill_no)
-            return redirect('/')
+            return redirect('purchase_bill', bill_no=bill_obj.bill_no)
+            # return redirect('/')
         formset = PurchaseItemFormset(request.GET or None)
         context = {
             'formset' : formset,
@@ -127,9 +127,9 @@ class PurchaseBillView(generic.View):
     model = PurchaseBill
     template_name = 'bill/purchase_bill.html'
     bill_base = 'bill/bill_base.html'
-    fom_class = PurchaseDetailsForm
+    form_class = PurchaseDetailsForm
 
-    def get_bill_context(self , bill_no):
+    def get_bill_context(self , bill_no ,form):
         bill = get_object_or_404(PurchaseBill , bill_no=bill_no)
         items = PurchaseItem.objects.filter(bill_no=bill_no)
         bill_details = get_object_or_404(PurchaseBillDetails , bill_no=bill_no)
@@ -138,11 +138,14 @@ class PurchaseBillView(generic.View):
             'bill':bill,
             'items':items,
             'bill_details':bill_details,
-            'bill_base':self.bill_base
+            'bill_base':self.bill_base,
+            'form':form,
         }
     
     def get(self , request , bill_no):
-        context = self.get_bill_context(bill_no=bill_no)
+        bill_details_obj = get_object_or_404(PurchaseBillDetails , bill_no=bill_no)
+        form = self.form_class(instance=bill_details_obj)
+        context = self.get_bill_context(bill_no=bill_no , form=form)
         return render(request , self.template_name , context)
     
     def post(self , request , bill_no):
@@ -154,7 +157,7 @@ class PurchaseBillView(generic.View):
             messages.success(request , "Bill details have been successfuly modefied")
         else:
             messages.success(request , "There was an error updating the bill details")
-        context = self.get_bill_context(bill_no)
+        context = self.get_bill_context(bill_no , form)
         return render(request , self.template_name , context)
     
 
