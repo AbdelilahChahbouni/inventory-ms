@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %} Purchase List {% endblock title %}
+{% block content %}
+
+      <div class="row">
+        <div class="col-md-12">
+          <!-- messages here -->
+          <div class="container">
+            <!-- block content -->
+
+            
+            <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+              <div class="col-md-8">Purchases List</div>
+              <div class="col-md-4">               
+                  <div style="float:right;"> <a class="btn btn-success" href="{% url 'select_supplier' %}">New Incoming Stock</a> </div>
+              </div>
+            </div>
+
+            <br>
+
+            <table class="table table-css table-hover table-bordered">
+
+                <thead class="thead-dark align-middle">
+                    <tr>
+                        <th width="10%">Bill No.</th>
+                        <th width="15%">Supplier</th>
+                        <th width="15%">Stocks Purchased</th>
+                        <th width="5%">Quantity Purchased</th>
+                        <th width="15%">Total Purchased Price</th>
+                        <th width="15%">Purchased Date</th>
+                        <th width="25%">Actions</th>
+                    </tr>
+                </thead>
+                {% if bills %}
+                <tbody> 
+                    {% for bill in bills %}        
+                    <tr>
+                        <td class="align-middle"> <p>{{bill.bill_no|truncatechars:10}}</p> </td>
+                        <td class=""> 
+                            <a href="#">{{bill.suplier.name}}</a> <br>
+                            <small style="color: #909494">Ph No : {{bill.suplier.phone}} </small> 
+                        </td>
+                        <td class="align-middle">{% for item in bill.get_items_list  %}{{item.stock.name }}{% endfor %} <br></td>
+                        <td class="align-middle">{% for item in bill.get_items_list  %}{{item.quantity}}{% endfor %}<br></td>     
+                        <td class="align-middle">{{bill.get_total_price}}</td>
+                        <td class="align-middle">{{bill.time.date}}</td>
+                        <td class="align-middle"> <a href="{% url 'purchase_bill' bill.bill_no %}" class="btn btn-secondary btn-sm">View Bill</a> <a href="{% url 'delete_purchase' bill.bill_no %}" class="btn btn-danger btn-sm">Delete Bill</a> </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+            <div class="align-middle">
+              <a class="btn btn-outline-info mb-4" href="">First</a>
+              <a class="btn btn-outline-info mb-4" href="">Previous</a>
+              <a class="btn btn-info mb-4" href="">1</a>
+              <a class="btn btn-outline-info mb-4" href="">2</a>
+              <a class="btn btn-outline-info mb-4" href="">Next</a>
+              <a class="btn btn-outline-info mb-4" href="">Last</a>
+                  
+            </div>
+
+              <!-- else -->
+            {% else %}
+            <br><br><br><br><br><br><br><br>
+            <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+            {% endif %}
+
+        </div>
+      </div>
+{% endblock content %}

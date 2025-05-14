@@ -107,12 +107,13 @@ class PurchaseCeateView(generic.View):
 
 class PurchaseDeleteView(SuccessMessageMixin , generic.DeleteView):
     model = PurchaseBill
-    template_name = 'purchase/purchase_delete.html'
+    template_name = 'purchase/delete_purchase.html'
     success_url = '/transaction/purchase_list'
 
-    def delete(self , *args , **kwargs):
+    def post(self , *args , **kwargs):
         self.object = self.get_object()
-        items = PurchaseBill.objects.filter(bill_no=self.object.bill_no)
+        items = PurchaseItem.objects.filter(bill_no=self.object.bill_no)
+
         for item in items:
             stock = get_object_or_404(InventoryStock , name=item.stock.name)
             if stock.is_deleted == False:
