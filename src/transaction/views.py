@@ -11,6 +11,11 @@ class SuplierListView(generic.ListView):
     template_name = "suplier/list_supliers.html"
     paginate_by = 10
 
+class SupplierDetailsView(generic.DetailView):
+    model = Supplier
+    template_name = 'suplier/supplier_details.html'
+    context_object_name = 'supplier'
+
 
 class CreateSuplierView(generic.CreateView):
     model = Supplier
@@ -161,6 +166,8 @@ class PurchaseBillView(generic.View):
         context = self.get_bill_context(bill_no , form)
         return render(request , self.template_name , context)
     
+
+#Supplier Section
 
 
 

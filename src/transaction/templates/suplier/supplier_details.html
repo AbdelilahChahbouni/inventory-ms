@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Supplier Details{% endblock title %}
+{% block content %}
+
+<div class="row">
+        <div class="col-md-12">
+          <!-- messages here -->
+          <div class="container">
+            <!-- block content -->
+
+            <div class="content-section">
+                <div class="media"><!-- Log on to codeastro.com for more projects -->
+                    <div class="media-body">
+                        <h2 style="color:#575757;" class="account-heading">&nbsp;{{supplier.name}}</h2>
+                        <a href="{% url 'update_suplier' supplier.id %}" class="btn btn-info" style="float: right;">Edit Details</a>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="fal">
+                                    <b>Contact &nbsp; &nbsp;&nbsp; :</b> {{supplier.phone}} <br>
+                                    <b>Email Id &nbsp;&nbsp;&nbsp;&nbsp; :</b> {{supplier.email}}<br>
+                                    <b>GSTIN No &nbsp; :</b> {{supplier.gstin}}<br>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fal">
+                                    <b>Address:</b> <br> {{supplier.address}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-css table-hover table-bordered">
+                
+                <br>
+                
+                <thead class="thead-dark align-middle">
+                    <tr>
+                        <th width="10%">Bill No.</th>
+                        <th width="15%">Stocks</th>
+                        <th width="15%">Quantity</th>
+                        <th width="15%">Total Purchased Price</th>
+                        <th width="15%">Purchased Date</th>
+                        <th width="30%">Actions</th>
+                    </tr><!-- Log on to codeastro.com for more projects -->
+                </thead>
+              
+                <tbody>
+                    {% for new in supplier.purchaseBill.all %}
+                    <tr>
+                        <td class="align-middle"> <p>{{new.bill_no|truncatechars:10}} </p> </td>
+                        <td class="align-middle">{% for item in new.get_items_list %}{{item.stock.name}}{% endfor %}<br> </td>
+                        <td class="align-middle">{% for item in new.get_items_list %}{{item.quantity}}{% endfor %}<br></td>     
+                        <td class="align-middle">{{new.get_total_price}}</td>
+                        <td class="align-middle">{{new.time.date}}</td>
+                        <td class="align-middle"> <a href="{% url 'purchase_bill' new.bill_no %}" class="btn btn-secondary">View Bill</a> <a href="{% url 'delete_purchase' new.bill_no %}" class="btn btn-danger">Delete Bill</a> </td>
+                    </tr><!-- Log on to codeastro.com for more projects -->
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+            <div class="align-middle">
+              <a class="btn btn-outline-info mb-4" href="">First</a>
+              <a class="btn btn-outline-info mb-4" href="">Previous</a>
+              <a class="btn btn-info mb-4" href="">1</a>
+              <a class="btn btn-outline-info mb-4" href="">2</a>
+              <a class="btn btn-outline-info mb-4" href="">Next</a>
+              <a class="btn btn-outline-info mb-4" href="">Last</a>
+            </div>
+
+          </div>
+        </div>
+{% endblock content %}       
+  
+

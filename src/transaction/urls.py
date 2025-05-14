@@ -8,6 +8,7 @@ urlpatterns = [
     path('create_suplier' , CreateSuplierView.as_view() , name='create_suplier'),
     path('update_suplier/<str:pk>',UpdateSuplierView.as_view(),name='update_suplier'),
     path('delete_suplier/<str:pk>',DeleteSuplierView.as_view(),name='delete_suplier'),
+    path('supplier_details/<str:pk>',SupplierDetailsView.as_view(),name='supplier_details'),
 
     #Purchases
 
