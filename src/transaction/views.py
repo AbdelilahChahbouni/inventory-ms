@@ -4,6 +4,7 @@ from .models import *
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.views import generic
+from django.core.paginator import Paginator
 
 
 class SuplierListView(generic.ListView):
@@ -15,6 +16,38 @@ class SupplierDetailsView(generic.DetailView):
     model = Supplier
     template_name = 'suplier/supplier_details.html'
     context_object_name = 'supplier'
+
+    def get_context_data(self , **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Get all purchase bills for this supplier
+        purchase_bills = self.object.purchaseBill.all()
+        
+        # Add pagination (show 10 bills per page)
+        paginator = Paginator(purchase_bills, 1)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        context['page_obj'] = page_obj
+        return context
+    # def get(self , request , name):
+    #     sup_obj = get_object_or_404(Supplier , name=name)
+    #     bill_list = PurchaseBill.objects.filter(suplier=sup_obj)
+    #     page = request.GET.get('page' , 1)
+    #     paginator = Paginator(bill_list , 1)
+    #     try:
+    #         bills = paginator.page(page)
+    #     except PageNotAnInteger:
+    #         bills = paginator.page(1)
+    #     except EmptyPage:
+    #         bills = paginator.page(paginator.num_pages)
+        
+    #     context = {
+    #         'suplier': sup_obj,
+    #         'biils' : bills
+    #     }
+    #     return render(request,'suplier/supplier_details.html', context)
+
 
 
 class CreateSuplierView(generic.CreateView):

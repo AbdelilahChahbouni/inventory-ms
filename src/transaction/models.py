@@ -63,3 +63,56 @@ class PurchaseBillDetails(models.Model):
 
     def __str__(self):
         return "Bill No " + str(self.bill_no.bill_no)
+    
+
+# Sale Section
+
+class SaleBill(models.Model):
+    bill_no = models.UUIDField(primary_key=True , default=uuid.uuid4)
+    time = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=12 , unique=True)
+    address = models.CharField(max_length=200)
+    email = models.EmailField(max_length=200 , unique=True)
+    gstin = models.CharField(max_length=15 , unique=True)
+
+    def __str__(self):
+        return "Sale Bill No " + str(self.bill_no)
+    
+    def get_total_price(self):
+        saleItems = SaleItem.objects.filter(bill_no=self)
+        total = 0
+        for item in saleItems:
+            total += item.total_price
+        return total
+    def get_items_list(self):
+        return SaleItem.objects.filter(bill_no = self)
+    
+class SaleItem(models.Model):
+     bill_no = models.ForeignKey(SaleBill , on_delete=models.CASCADE , related_name="sale_bill")
+     stock = models.ForeignKey(InventoryStock , on_delete=models.CASCADE , related_name="sale_stock")
+     quantity = models.IntegerField(default=1)
+     per_price = models.IntegerField(default=1)
+     total_price = models.IntegerField(default=1)
+
+     def __str__(self):
+        return " Sale Bill no " + str(self.bill_no.bill_no) + "item = " + self.stock.name
+
+
+class SaleBillDetail(models.Model):
+    bill_no = models.ForeignKey(SaleBill , on_delete=models.CASCADE ,related_name="saleBillDetail")
+    eway = models.CharField(max_length=50 , blank=True , null=True )
+    veh = models.CharField(max_length=50 , blank=True , null=True )
+    destination = models.CharField(max_length=50 , blank=True , null=True )
+    po = models.CharField(max_length=50 , blank=True , null=True )
+
+    cgst = models.CharField(max_length=50 , blank=True , null=True )
+    sgst = models.CharField(max_length=50 , blank=True , null=True )
+    igst = models.CharField(max_length=50 , blank=True , null=True )
+    cess = models.CharField(max_length=50 , blank=True , null=True )
+    tcs = models.CharField(max_length=50 , blank=True , null=True )
+
+    total = models.CharField(max_length=50 , blank=True , null=True )
+
+    def __str__(self):
+        return "Sale Details Bill No " + str(self.bill_no.bill_no)
