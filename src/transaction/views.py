@@ -247,7 +247,64 @@ class SaleCreateView(generic.View):
 
         return render(request , self.template_name , context)
     
+
+class SaleListView(generic.ListView):
+    model = SaleBill
+    template_name = 'sales/sales_list.html'
+    context_object_name = 'sale_bills'
+    ordering = ['-time']
+    paginate_by = 10
+
+
+
+class SaleDeleteView(generic.DeleteView):
+    model = SaleBill
+    template_name = 'sales/sale_delete.html'
+    redirect = 'transaction/sales'
+
+    def post(self , *args , **kwargs):
+        self.object = self.get_object()
+        items = SaleItem.objects.filter(bill_no = self.object.bill_no)
+        for item in items:
+            stock =get_object_or_404(InventoryStock , name=item.stock.name)
+            if stock.is_deleted == False:
+                stock.quantity += item.quantity 
+                stock.save()
+        messages.success(self.request , "Sale Bill has been deleted successfully")
+        return super(SaleDeleteView , self).delete(*args , **kwargs)
     
+
+class SaleBillView(generic.View):
+    model = SaleBill
+    template_name = 'bill/sale_bill.html'
+    bill_base = 'bill/bill_base.html'
+
+    def get(request , self):
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
