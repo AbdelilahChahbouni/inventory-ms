@@ -200,7 +200,55 @@ class PurchaseBillView(generic.View):
         return render(request , self.template_name , context)
     
 
-#Supplier Section
+#Sales Section
+
+class SaleCreateView(generic.View):
+    template_name = "sales/sale_create.html"
+
+    def get(self,request):
+        form = SaleForm(request.GET or None)
+        form_set = SaleItemFormset(request.GET or None)
+        stocks = InventoryStock.objects.filter(is_deleted = False)
+
+        context = {
+            'form':form,
+            'form_set':form_set,
+            'stocks':stocks
+        }
+        return render(request , self.template_name , context)
+    def post(self , request):
+        form = SaleForm(request.POST)
+        form_set = SaleItemFormset(request.POST)
+
+        if form.is_vaid() and form_set.is_valid():
+            bill_obj = form.save(commit=False)
+            bill_obj.save()
+
+            bill_detail_obj = SaleBillDetail(bill_no = bill_obj)
+            bill_detail_obj.save()
+
+            for form in form_set:
+                bill_item = form.save(commit=False)
+                bill_item.bill_no = bill_obj
+                stock = get_object_or_404(InventoryStock , name=bill_item.stock.name )
+                bill_item.total_price = bill_item.per_price * bill_item.quantity
+                stock.quantity -= bill_item.quantity
+                stock.save()
+                bill_item.save()
+            messages.success(request , "sold item has been registered successfully")
+            return redirect('sale_bill' , bill_no = bill_obj.bill_no)
+        form = SaleForm(request.GET or None)
+        form_set = SaleItemFormset(request.GET or None)
+
+        context = {
+            'form':form,
+            'form_set':form_set
+        }
+
+        return render(request , self.template_name , context)
+    
+    
+
 
 
 
