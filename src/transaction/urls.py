@@ -18,4 +18,11 @@ urlpatterns = [
     path('purchase_delete/<str:pk>',PurchaseDeleteView.as_view(), name='delete_purchase'),
     path('purchase_bill/<str:bill_no>', PurchaseBillView.as_view(), name='purchase_bill'),
 
+    #Sales
+    path('sales/list' , SaleBill.as_view() , name='sales_list'),
+    path('sales/create' , SaleCreateView , name='sale_craete'),
+    path('sales/delete/<str:pk>' , SaleDeleteView.as_view(), name='sale_delete'),
+    path('sales/<bill_no>' , SaleBillView.as_view() , name='sale_bill'),
+
+
 ]
